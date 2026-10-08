@@ -100,7 +100,9 @@
     - kubeadm_already_run is not defined or not kubeadm_already_run.stat.exists
 
 - name: Wait for new control plane nodes to be Ready
-  when: kubeadm_already_run.stat.exists
+  when:
+    - kubeadm_already_run.stat.exists
+    - not (skip_control_plane_ready_wait | default(false) | bool)
   run_once: true
   command: >
     {{ kubectl }} get nodes --selector node-role.kubernetes.io/control-plane
